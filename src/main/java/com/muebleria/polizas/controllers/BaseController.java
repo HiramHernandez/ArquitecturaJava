@@ -3,11 +3,6 @@ package com.muebleria.polizas.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
-import com.muebleria.polizas.utils.BaseResponse;
-import com.muebleria.polizas.utils.ResponseActualizar;
-import com.muebleria.polizas.utils.ResponseConsultar;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
