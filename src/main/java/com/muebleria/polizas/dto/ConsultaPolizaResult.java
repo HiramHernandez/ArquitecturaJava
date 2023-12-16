@@ -13,6 +13,7 @@ public class ConsultaPolizaResult {
     private int SKUDetalleArticulo;
     private String NombreDetalleArticulo;
 
+    public ConsultaPolizaResult(){}
     public ConsultaPolizaResult(int idPoliza, int cantidadPoliza, String nombreEmpleado,
                                 String apellidoEmpleado, int skuDetalleArticulo,
                                 String nombreDetalleArticulo) {
@@ -64,7 +65,8 @@ public class ConsultaPolizaResult {
         this.SKUDetalleArticulo = SKUDetalleArticulo;
     }
 
-    public void setNombreDetalleArticulo(String nombreDetalleArticulo) {
-        NombreDetalleArticulo = nombreDetalleArticulo;
-    }
+    public void setNombreDetalleArticulo(String nombreDetalleArticulo) { NombreDetalleArticulo = nombreDetalleArticulo; }
+    public String getNombreDetalleArticulo() { return NombreDetalleArticulo; }
+
 }
+
