@@ -20,7 +20,7 @@ import com.muebleria.polizas.dto.*;
 import com.muebleria.polizas.services.PolizaService;
 import com.muebleria.polizas.utils.BaseResponseConsultar;
 import com.muebleria.polizas.utils.Constants;
-import org.yaml.snakeyaml.events.Event;
+import com.muebleria.polizas.utils.PolizaControllerUtil;
 
 @RestController
 @RequestMapping("/api/poliza")
@@ -31,26 +31,26 @@ public class PolizaController {
 
     @GetMapping("/empleado/{id}")
     @Transactional(readOnly = true)
-    public ResponseEntity<BaseResponseConsultar<List<PolizaResponse>>>ObtenerPolizasPorEmpleado(@PathVariable int id)
+    public ResponseEntity<BaseResponseConsultar<?>>ObtenerPolizasPorEmpleado(@PathVariable int id)
     {
         try
         {
+            //
             List<ConsultaPolizaResult> polizasPrint = polizaService.consultarPolizaPorEmpleado(id);
-            List<PolizaResponse> polizaResponses = new ArrayList<>();
-            BaseResponseConsultar<List<PolizaResponse>> response = new BaseResponseConsultar<List<PolizaResponse>>();
             Meta meta = new Meta();
             if(polizasPrint.isEmpty()){
+                BaseResponseConsultar<DataMessage> responseEmpty = new BaseResponseConsultar<DataMessage>();
                 meta.setStatus(Constants.MESSAGE_FAILURE);
-                response.setMeta(meta);
-                return ResponseEntity.ok(response);
+                responseEmpty.setMeta(meta);
+                DataMessage dataMessage = new DataMessage(Constants.MESSAGE_QUERY_FAILURE);
+                responseEmpty.setData(dataMessage);
+                return ResponseEntity.ok(responseEmpty);
             }
-            for (ConsultaPolizaResult poliza: polizasPrint){
-                PolizaResponse polizaResponse = new PolizaResponse();
-                polizaResponse.setPoliza(new PolizaDto(poliza.getIdPoliza(), poliza.getCantidadPoliza()));
-                polizaResponse.setEmpleado(new EmpleadoDto(poliza.getNombreEmpleado(), poliza.getApellidoEmpleado()));
-                polizaResponse.setDetalleArticulo(new DetalleArticuloDto(poliza.getSKUDetalleArticulo(), poliza.getNombreDetalleArticulo()));
-                polizaResponses.add(polizaResponse);
-            }
+
+            PolizaControllerUtil polizaControllerUtil = new PolizaControllerUtil();
+            List<PolizaResponse> polizaResponses = polizaControllerUtil.mapPolizaResponse(polizasPrint);
+
+            BaseResponseConsultar<List<PolizaResponse>> response = new BaseResponseConsultar<List<PolizaResponse>>();
             meta.setStatus(Constants.MESSAGE_OK);
             response.setMeta(meta);
             response.setData(polizaResponses);
@@ -58,6 +58,75 @@ public class PolizaController {
         }catch (Exception e)
         {
             logger.error("Ha ocurrido un error al obtener polizas para el empleado con ID {}: {}", id, e.getMessage(), e);
+        }
+        return ResponseEntity.ok(null);
+    }
+
+    @GetMapping("")
+    @Transactional(readOnly = true)
+    public ResponseEntity<BaseResponseConsultar<?>>ObtenerPolizas()
+    {
+        try
+        {
+            List<ConsultaPolizaResult> polizas = polizaService.consultarPolizas();
+            Meta meta = new Meta();
+            if(polizas.isEmpty()){
+                BaseResponseConsultar<DataMessage> responseEmpty = new BaseResponseConsultar<DataMessage>();
+                meta.setStatus(Constants.MESSAGE_FAILURE);
+                responseEmpty.setMeta(meta);
+                DataMessage dataMessage = new DataMessage(Constants.MESSAGE_QUERY_FAILURE);
+                responseEmpty.setData(dataMessage);
+                return ResponseEntity.ok(responseEmpty);
+            }
+            PolizaControllerUtil polizaControllerUtil = new PolizaControllerUtil();
+            List<PolizaResponse> polizaResponses = polizaControllerUtil.mapPolizaResponse(polizas);
+
+            BaseResponseConsultar<List<PolizaResponse>> response = new BaseResponseConsultar<List<PolizaResponse>>();
+            meta.setStatus(Constants.MESSAGE_OK);
+            response.setMeta(meta);
+            response.setData(polizaResponses);
+            return ResponseEntity.ok(response);
+        }catch (Exception e)
+        {
+            logger.error("Ha ocurrido un error al obtener polizas las polizas");
+        }
+        return ResponseEntity.ok(null);
+    }
+
+    @GetMapping("/{idPoliza}")
+    @Transactional(readOnly = true)
+    public ResponseEntity<BaseResponseConsultar<?>>ObtenerPolizaPorId(@PathVariable int idPoliza)
+    {
+        try
+        {
+            //
+            ConsultaPolizaResult poliza = polizaService.consultarPoliza(idPoliza);
+            Meta meta = new Meta();
+            if(poliza == null){
+                BaseResponseConsultar<DataMessage> responseEmpty = new BaseResponseConsultar<DataMessage>();
+                meta.setStatus(Constants.MESSAGE_FAILURE);
+                responseEmpty.setMeta(meta);
+                DataMessage dataMessage = new DataMessage(Constants.MESSAGE_QUERY_FAILURE);
+                responseEmpty.setData(dataMessage);
+                return ResponseEntity.ok(responseEmpty);
+            }
+
+
+
+            PolizaResponse polizaResponse = new PolizaResponse();
+            polizaResponse.setPoliza(new PolizaDto(poliza.getIdPoliza(), poliza.getCantidadPoliza()));
+            polizaResponse.setEmpleado(new EmpleadoDto(poliza.getNombreEmpleado(), poliza.getApellidoEmpleado()));
+            polizaResponse.setDetalleArticulo(new DetalleArticuloDto(poliza.getSKUDetalleArticulo(), poliza.getNombreDetalleArticulo()));
+
+
+            BaseResponseConsultar<PolizaResponse> response = new BaseResponseConsultar<PolizaResponse>();
+            meta.setStatus(Constants.MESSAGE_OK);
+            response.setMeta(meta);
+            response.setData(polizaResponse);
+            return ResponseEntity.ok(response);
+        }catch (Exception e)
+        {
+            logger.error("Ha ocurrido un error al obtener poliza con ID {}: {}", idPoliza, e.getMessage(), e);
         }
         return ResponseEntity.ok(null);
     }
@@ -88,10 +157,10 @@ public class PolizaController {
     }
 
     @PutMapping("/{idPoliza}")
-    public ResponseEntity<BaseResponseConsultar<DataMessage>> removePoliza(@RequestBody Poliza poliza){
+    public ResponseEntity<BaseResponseConsultar<DataMessage>> removePoliza(@RequestBody Poliza poliza, @PathVariable int idPoliza){
         BaseResponseConsultar<DataMessage> response = new BaseResponseConsultar<DataMessage>();
 
-        boolean success = polizaService.editPoliza(poliza.getIdPoliza(),poliza.getEmpleadoGenero(), poliza.getSKU(), poliza.getCantidad());
+        boolean success = polizaService.editPoliza(idPoliza, poliza.getEmpleadoGenero(), poliza.getSKU(), poliza.getCantidad());
         String status;
         String IDMensaje;
         if(success){

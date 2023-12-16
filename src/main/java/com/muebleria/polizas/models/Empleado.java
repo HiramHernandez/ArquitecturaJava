@@ -51,8 +51,8 @@ public class Empleado {
     public String getPuesto(){
         return Puesto;
     }
-    public void setPuesto(String Puesto)
+    public void setPuesto(String puesto)
     {
-        Puesto = Puesto;
+        Puesto = puesto;
     }
 }

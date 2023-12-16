@@ -20,6 +20,9 @@ public class Poliza {
     private int Cantidad;
     @Column(name = "Fecha")
     private Date Fecha;
+
+    @Column(name = "FechaModifico")
+    private Date FechaModifico;
     // Constructor, getters y setters
     public Poliza(int IdPoliza, int EmpleadoGenero, int SKU, int Cantidad, Date Fecha) {
         this.IdPoliza = IdPoliza;

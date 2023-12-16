@@ -22,4 +22,9 @@ public interface IEmpleadoRepository extends JpaRepository<Empleado, String>{
     @Query(value = "Exec InsertarEmpleado :nombre, :apellido, :puesto", nativeQuery = true)
     @Transactional
     public void saveEmpleado(String nombre, String apellido, String puesto);
+
+    @Modifying
+    @Query(value = "Exec ActualizarEmpleado :idEmpleado, :nombre, :apellido, :puesto", nativeQuery = true)
+    @Transactional
+    public void editEmpleado(int idEmpleado, String nombre, String apellido, String puesto);
 }

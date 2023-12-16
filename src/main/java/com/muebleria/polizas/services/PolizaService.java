@@ -36,6 +36,11 @@ public class PolizaService {
         return polizaRepository.consultarPoliza(idPoliza);
     }
 
+    public List<ConsultaPolizaResult> consultarPolizas()
+    {
+        return polizaRepository.consultarPolizas();
+    }
+
     public int savePoliza(int empleadoGenero, int sku, int cantidad, Date fecha)
     {
         try{
@@ -58,35 +63,38 @@ public class PolizaService {
             return idPoliza;
         }catch (Exception e){
             logger.error("Ha ocurrido un error al guardar la poliza: {}", e.getMessage());
+            return 0;
         }
-        return 0;
+
     }
 
     public boolean editPoliza(int idPoliza, int empleadoGenero, int sku, int cantidad)
     {
         try{
+            System.out.println(idPoliza);
             StoredProcedureQuery query = entityManager.createStoredProcedureQuery("ActualizarPoliza");
 
             query.registerStoredProcedureParameter("IdPoliza", Integer.class, ParameterMode.IN);
             query.registerStoredProcedureParameter("EmpleadoGenero", Integer.class, ParameterMode.IN);
             query.registerStoredProcedureParameter("SKU", Integer.class, ParameterMode.IN);
             query.registerStoredProcedureParameter("Cantidad", Integer.class, ParameterMode.IN);
-            query.registerStoredProcedureParameter("Fecha", Date.class, ParameterMode.IN);
+            query.registerStoredProcedureParameter("FechaModifico", Date.class, ParameterMode.IN);
 
             query.setParameter("IdPoliza", idPoliza);
             query.setParameter("EmpleadoGenero", empleadoGenero);
             query.setParameter("SKU", sku);
             query.setParameter("Cantidad", cantidad);
-            query.setParameter("Fecha", new Date());
+            query.setParameter("FechaModifico", new Date());
 
             query.execute();
 
             return true;
         }catch (Exception e){
-            System.out.println("Ha ocurrido un error al guardar la poliza: "+ e.getMessage());
+            System.out.println("Ha ocurrido un error: " + e.getMessage());
             logger.error("Ha ocurrido un error al guardar la poliza: {}", e.getMessage());
+            return false;
         }
-        return false;
+
     }
 
     public boolean removePoliza(int idPoliza)

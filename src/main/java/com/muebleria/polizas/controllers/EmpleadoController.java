@@ -7,12 +7,7 @@ import com.muebleria.polizas.utils.DataMessage;
 import com.muebleria.polizas.utils.Meta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.muebleria.polizas.models.Empleado;
 import com.muebleria.polizas.services.EmpleadoService;
@@ -60,10 +55,27 @@ public class EmpleadoController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("")
-    public String UpdateEmpleado()
+    @PutMapping("/{idEmpleado}")
+    public  ResponseEntity<BaseResponseConsultar<DataMessage>> editEmpleado(@RequestBody Empleado empleado, @PathVariable Integer idEmpleado)
     {
-        return "";
+        boolean success =
+                empleadoService.editmpleado(idEmpleado, empleado.getNombre(), empleado.getApellido(), empleado.getPuesto());
+        BaseResponseConsultar<DataMessage> response = new BaseResponseConsultar<DataMessage>();
+
+        String status = "";
+        String IDMensaje;
+        if(success){
+            status = Constants.MESSAGE_CREATE;
+            IDMensaje = "Se actualizó el empleado";
+        }else{
+            status = Constants.MESSAGE_INTERNAL_ERRROR;
+            IDMensaje = "Ocurrio un error";
+        }
+        Meta meta = new Meta(status);
+        DataMessage dataMessage = new DataMessage(IDMensaje);
+        response.setMeta(meta);
+        response.setData(dataMessage);
+        return ResponseEntity.ok(response);
     }
 
 }

@@ -19,10 +19,13 @@ public interface IPolizaRepository extends CrudRepository<ConsultaPolizaResult, 
     List<ConsultaPolizaResult> consultarPolizaPorEmpleado(@Param("IdEmpleado") int idEmpleado);
     @Query(value = "EXEC ConsultarPoliza :IdPoliza", nativeQuery = true )
     ConsultaPolizaResult consultarPoliza(@Param("IdPoliza") int idPoliza);
+
+    @Query(value = "EXEC ConsultarPolizas", nativeQuery = true)
+    List<ConsultaPolizaResult> consultarPolizas();
     @Modifying
-    @Query(value = "Exec CrearPoliza :EmpleadoGenero, :SKU, :Cantidad, :Fecha, :idPoliza OUTPUT", nativeQuery = true)
+    @Query(value = "Exec CrearPoliza :EmpleadoGenero, :SKU, :Cantidad, :FechaModifico, :idPoliza OUTPUT", nativeQuery = true)
     @javax.transaction.Transactional
-    public void savePoliza(int EmpleadoGenero, int SKU, int Cantidad, Date Fecha, int idPoliza);
+    public void savePoliza(int EmpleadoGenero, int SKU, int Cantidad, Date FechaModifico, int idPoliza);
 
     @Modifying
     @Query(value = "Exec EliminarPoliza :idPoliza", nativeQuery = true)
