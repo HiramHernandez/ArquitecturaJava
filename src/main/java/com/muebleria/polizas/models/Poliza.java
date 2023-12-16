@@ -21,12 +21,12 @@ public class Poliza {
     @Column(name = "Fecha")
     private Date Fecha;
     // Constructor, getters y setters
-    public Poliza(int idPoliza, int empleadoGenero, int sku, int cantidad, Date fecha) {
-        IdPoliza = idPoliza;
-        EmpleadoGenero = empleadoGenero;
-        SKU = sku;
-        Cantidad = cantidad;
-        Fecha = fecha;
+    public Poliza(int IdPoliza, int EmpleadoGenero, int SKU, int Cantidad, Date Fecha) {
+        this.IdPoliza = IdPoliza;
+        this.EmpleadoGenero = EmpleadoGenero;
+        this.SKU = SKU;
+        this.Cantidad = Cantidad;
+        this.Fecha = Fecha;
     }
     public int getIdPoliza() {
         return IdPoliza;

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.muebleria.polizas.models.Empleado;
 import com.muebleria.polizas.services.EmpleadoService;
-import org.yaml.snakeyaml.events.Event;
+import com.muebleria.polizas.utils.Constants;
 
 @RestController
 @RequestMapping("/api/empleados")
@@ -29,7 +29,7 @@ public class EmpleadoController {
         BaseResponseConsultar<List<Empleado>> response =
                 new BaseResponseConsultar<List<Empleado>>();
         List<Empleado> empleados = empleadoService.getListEmpleados();
-        String status = (empleados.isEmpty()) ? "Not Content": "Ok";
+        String status = (empleados.isEmpty()) ? Constants.MESSAGE_FAILURE: Constants.MESSAGE_OK;
         Meta meta = new Meta();
         meta.setStatus(status);
         response.setMeta(meta);
@@ -47,10 +47,10 @@ public class EmpleadoController {
         String status = "";
         String IDMensaje;
         if(success){
-            status = "Created";
+            status = Constants.MESSAGE_CREATE;
             IDMensaje = "Se creó el empleado";
         }else{
-            status = "Internal Error Server";
+            status = Constants.MESSAGE_INTERNAL_ERRROR;
             IDMensaje = "Ocurrio un error";
         }
         Meta meta = new Meta(status);
