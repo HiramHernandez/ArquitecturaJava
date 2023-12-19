@@ -78,4 +78,27 @@ public class EmpleadoController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/{idEmpleado}")
+    public  ResponseEntity<BaseResponseConsultar<DataMessage>> removeEmpleado(@PathVariable Integer idEmpleado)
+    {
+        boolean success = empleadoService.removeEmpleado(idEmpleado);
+        BaseResponseConsultar<DataMessage> response = new BaseResponseConsultar<DataMessage>();
+        String status;
+        String IDMensaje;
+        if(success)
+        {
+            status = Constants.MESSAGE_OK;
+            IDMensaje = "Se eliminó correctamente el empleado ##";
+        }
+        else{
+            status = Constants.MESSAGE_FAILURE;
+            IDMensaje = "Ha ocurrido un error al intentar eliminar el empleado.";
+        }
+        Meta meta = new Meta(status);
+        DataMessage dataMessage = new DataMessage(IDMensaje);
+        response.setData(dataMessage);
+        response.setMeta(meta);
+        return ResponseEntity.ok(response);
+    }
+
 }

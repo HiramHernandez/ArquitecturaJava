@@ -19,15 +19,21 @@ public class PolizasApplication {
 	}
 
 	@Bean
-	public WebMvcConfigurer corsConfigure(){
-		String[] allowDomains = new String[1];
-		allowDomains[0] = "http://localhost:4200";
-		System.out.println("CORS configuration...");
+	public WebMvcConfigurer corsConfigurer() {
+		String[] allowedMethods = { "GET", "POST", "PUT", "DELETE", "OPTIONS" };
+    	String[] allowedHeaders = { "Authorization", "Content-Type" };
+    	String[] allowDomains = { "http://localhost:4200" };
+
 		return new WebMvcConfigurer() {
 			@Override
-			public void addCorsMappings(CorsRegistry registry){
-				registry.addMapping("/**").allowedOrigins(allowDomains);
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**")
+					.allowedOrigins(allowDomains)
+					.allowedMethods(allowedMethods)
+					.allowedHeaders(allowedHeaders)
+					.allowCredentials(true);
 			}
+		
 		};
 	}
 

@@ -27,4 +27,9 @@ public interface IEmpleadoRepository extends JpaRepository<Empleado, String>{
     @Query(value = "Exec ActualizarEmpleado :idEmpleado, :nombre, :apellido, :puesto", nativeQuery = true)
     @Transactional
     public void editEmpleado(int idEmpleado, String nombre, String apellido, String puesto);
+
+    @Modifying
+    @Query(value = "Exec EliminarEmpleado :idEmpleado", nativeQuery = true)
+    @Transactional
+    public void removeEmpleado(int idEmpleado);
 }

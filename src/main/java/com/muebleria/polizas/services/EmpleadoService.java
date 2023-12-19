@@ -44,4 +44,17 @@ public class EmpleadoService {
         }
 
     }
+
+    public boolean removeEmpleado(int idEmpleado)
+    {
+        try{
+            iEmpleadoRepository.removeEmpleado(idEmpleado);
+            return true;
+        }catch (Exception e)
+        {
+            logger.error("Ha ocurrido un error al eliminar la poliza: {}", e.getMessage());
+            return false;
+        }
+    }
+
 }
