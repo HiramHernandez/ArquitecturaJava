@@ -71,7 +71,7 @@ public class InventarioController {
         String status;
         String IDMensaje;
 
-        if(!success){
+        if(success){
             status = Constants.MESSAGE_OK;
             IDMensaje = "Se guardo el inventario";
         }else{
@@ -85,7 +85,7 @@ public class InventarioController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{idPoliza}")
+    @PutMapping("/{idInventario}")
     public ResponseEntity<BaseResponseConsultar<DataMessage>> editInventario(@RequestBody Inventario inventario, @PathVariable int idInventario){
         BaseResponseConsultar<DataMessage> response = new BaseResponseConsultar<DataMessage>();
 
